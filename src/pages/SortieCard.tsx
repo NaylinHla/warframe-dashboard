@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 
 type SortieVariant = {
@@ -21,13 +21,14 @@ type Sortie = {
 const SortieCard = () => {
     const [sortie, setSortie] = useState<Sortie | null>(null);
     const [countdown, setCountdown] = useState<string>("");
+    const expiryRef = useRef<string | null>(null);
 
     const fetchSortie = async () => {
         try {
             const res = await fetch('https://api.warframestat.us/pc/sortie');
             const data: Sortie = await res.json();
             setSortie(data);
-            setCountdown(calculateCountdown(data.expiry));
+            expiryRef.current = data.expiry;
         } catch (error) {
             console.error("Failed to fetch sortie:", error);
         }
@@ -46,14 +47,14 @@ const SortieCard = () => {
         return `${hours}h ${mins}m ${secs}s`;
     };
 
-
     useEffect(() => {
-        fetchSortie();
-        const fetchInterval = setInterval(fetchSortie, 60000); // Refresh data every 60s
+        fetchSortie(); // Initial fetch
+
+        const fetchInterval = setInterval(fetchSortie, 60000); // Refresh every 60s
 
         const countdownInterval = setInterval(() => {
-            if (sortie) {
-                setCountdown(calculateCountdown(sortie.expiry));
+            if (expiryRef.current) {
+                setCountdown(calculateCountdown(expiryRef.current));
             }
         }, 1000); // Update countdown every second
 
@@ -61,7 +62,7 @@ const SortieCard = () => {
             clearInterval(fetchInterval);
             clearInterval(countdownInterval);
         };
-    }, [sortie]);
+    }, []); // ← only run on mount
 
     if (!sortie) return <div>Loading sortie...</div>;
 
