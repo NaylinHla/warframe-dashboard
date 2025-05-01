@@ -17,6 +17,7 @@ type FissureWithCountdown = VoidFissure & { countdown: string };
 
 const VoidFissuresCard = () => {
     const [fissures, setFissures] = useState<FissureWithCountdown[]>([]);
+    const [search, setSearch] = useState<string>("");
 
     const fetchFissures = async () => {
         try {
@@ -46,7 +47,7 @@ const VoidFissuresCard = () => {
 
     useEffect(() => {
         fetchFissures();
-        const fetchInterval = setInterval(fetchFissures, 60000); // Refresh data every 60s
+        const fetchInterval = setInterval(fetchFissures, 60000); // Refresh every 60s
 
         const countdownInterval = setInterval(() => {
             setFissures(prev =>
@@ -63,13 +64,28 @@ const VoidFissuresCard = () => {
         };
     }, []);
 
+    const filteredFissures = fissures.filter(f =>
+        `${f.node} ${f.missionType} ${f.tier} ${f.enemy}`
+            .toLowerCase()
+            .includes(search.toLowerCase())
+    );
+
     if (fissures.length === 0) return <div>Loading void fissures...</div>;
 
     return (
-        <div className="bg-gray-900 text-white p-4 rounded-xl shadow-lg">
+        <div className="bg-gray-900 text-white p-4 rounded-xl shadow-lg h-full flex flex-col">
             <h2 className="text-xl font-bold mb-4">🌌 Active Void Fissures</h2>
+
+            <input
+                type="text"
+                placeholder="Search fissures..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="mb-4 p-2 rounded-md bg-gray-800 border border-gray-600 w-full text-sm"
+            />
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {fissures.map((fissure) => (
+                {filteredFissures.map((fissure) => (
                     <div
                         key={fissure.id}
                         className="bg-gray-800 p-3 rounded-lg border border-gray-700 flex flex-col justify-between min-h-[160px]"
