@@ -50,7 +50,7 @@ export const CetusStatusCard = () => {
 
     return (
         <div className="bg-gray-900 text-white p-4 rounded-xl shadow-lg max-w-sm">
-            <h2 className="text-xl font-bold mb-2">🌍 Cetus Status</h2>
+            <h2 className="text-xl font-bold mb-2">🐟 Cetus Status</h2>
             <p className="text-lg">
                 It is currently{' '}
                 <span className={cycle.isDay ? 'text-yellow-400' : 'text-purple-400'}>

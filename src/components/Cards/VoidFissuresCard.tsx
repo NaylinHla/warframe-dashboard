@@ -74,7 +74,6 @@ const VoidFissuresCard = () => {
 
     return (
         <div className="bg-gray-900 text-white p-4 rounded-xl shadow-lg h-full flex flex-col">
-            <h2 className="text-xl font-bold mb-4">🌌 Active Void Fissures</h2>
 
             <input
                 type="text"
